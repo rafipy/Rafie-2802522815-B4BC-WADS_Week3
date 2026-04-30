@@ -8,15 +8,32 @@ export default async function Home() {
   if (session) redirect("/dashboard");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted/30">
-      <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold tracking-tight">Todo List App</h1>
-        <p className="text-muted-foreground text-lg">Manage your tasks efficiently.</p>
-        <div className="flex gap-4 justify-center">
-          <Button asChild>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4">
+      {/* Warm ambient glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% 60%, oklch(0.95 0.035 80 / 0.55), transparent)",
+        }}
+      />
+
+      <div className="relative z-10 text-center space-y-6 max-w-lg">
+        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          Your personal task companion
+        </p>
+        <h1 className="font-display text-5xl font-semibold leading-tight tracking-tight text-foreground sm:text-6xl">
+          Taskwise
+        </h1>
+        <p className="text-muted-foreground text-lg leading-relaxed">
+          A warm, focused space to capture what matters and get things done.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center pt-2">
+          <Button asChild size="lg" className="font-medium">
             <Link href="/login">Sign in</Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button asChild variant="outline" size="lg" className="font-medium">
             <Link href="/register">Create account</Link>
           </Button>
         </div>

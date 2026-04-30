@@ -8,8 +8,6 @@ import { getAvatarUrl } from "@/lib/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
 export default function RegisterPage() {
@@ -21,8 +19,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const validate = (): string | null => {
-    const trimmedName = name.trim();
-    if (!trimmedName) return "Name is required.";
+    if (!name.trim()) return "Name is required.";
     if (!email.trim()) return "Email is required.";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) return "Please enter a valid email address.";
@@ -33,18 +30,14 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const error = validate();
     if (error) {
       toast.error(error);
       return;
     }
-
     try {
       setLoading(true);
-
       const image = getAvatarUrl(name);
-
       const { data, error } = await authClient.signUp.email({
         name: name.trim(),
         email: email.trim(),
@@ -52,14 +45,12 @@ export default function RegisterPage() {
         image,
         callbackURL: "/dashboard",
       });
-
       if (error) {
         toast.error(error.message ?? "Registration failed.");
         return;
       }
-
       if (data) {
-        toast.success("Account created successfully. Welcome!");
+        toast.success("Account created! Welcome to Taskwise.");
         router.push("/dashboard");
         router.refresh();
       }
@@ -72,21 +63,35 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted/30 px-4 py-10">
-      <Card className="w-full max-w-md border-0 shadow-xl shadow-primary/5 sm:border">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-semibold tracking-tight">Create an account</CardTitle>
-          <CardDescription>Enter your details to get started with your to-do list.</CardDescription>
-        </CardHeader>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 55%, oklch(0.95 0.035 80 / 0.45), transparent)",
+        }}
+      />
 
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
+      <div className="relative z-10 w-full max-w-md">
+        <div className="mb-8 text-center">
+          <Link
+            href="/"
+            className="font-display text-2xl font-semibold text-foreground hover:text-primary transition-colors"
+          >
+            Taskwise
+          </Link>
+          <p className="mt-2 text-sm text-muted-foreground">Create your account</p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card shadow-lg p-8">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="e.g. John Doe"
+                placeholder="e.g. Jane Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
@@ -95,7 +100,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -109,7 +114,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
@@ -123,7 +128,7 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="confirmPassword">Confirm password</Label>
               <Input
                 id="confirmPassword"
@@ -137,27 +142,19 @@ export default function RegisterPage() {
               />
             </div>
 
-            <Separator className="my-4" />
-
-            <Button
-              type="submit"
-              className="w-full h-10 font-medium"
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full h-10 font-medium mt-2" disabled={loading}>
               {loading ? "Creating account…" : "Create account"}
             </Button>
-          </CardContent>
+          </form>
 
-          <CardFooter className="flex flex-col gap-4 mt-4">
-            <p className="text-center text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
+          <p className="mt-5 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
